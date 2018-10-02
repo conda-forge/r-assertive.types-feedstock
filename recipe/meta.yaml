@@ -1,5 +1,4 @@
 {% set version = '0.0-3' %}
-
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -10,25 +9,26 @@ package:
 source:
   fn: assertive.types_{{ version }}.tar.gz
   url:
-    - https://cran.r-project.org/src/contrib/assertive.types_{{ version }}.tar.gz
-    - https://cran.r-project.org/src/contrib/Archive/assertive.types/assertive.types_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/assertive.types_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/assertive.types/assertive.types_{{ version }}.tar.gz
   sha256: ab6db2eb926e7bc885f2043fab679330aa336d07755375282d89bf9f9d0cb87f
 
 build:
-  number: 1
+  merge_build_host: True  # [win]
+  number: 2
   skip: true  # [win32]
-
   rpaths:
     - lib/R/lib/
     - lib/
 
 requirements:
   build:
+    - {{posix}}zip               # [win]
+  host:
     - r-base
     - r-assertive.base >=0.0_7
     - r-assertive.properties
     - r-codetools
-
   run:
     - r-base
     - r-assertive.base >=0.0_7
@@ -37,7 +37,7 @@ requirements:
 
 test:
   commands:
-    - $R -e "library('assertive.types')"  # [not win]
+    - $R -e "library('assertive.types')"           # [not win]
     - "\"%R%\" -e \"library('assertive.types')\""  # [win]
 
 about:
@@ -56,4 +56,6 @@ extra:
     - bgruening
     - daler
     - jdblischak
+    - cbrueffer
+    - dbast
     - jenzopr
